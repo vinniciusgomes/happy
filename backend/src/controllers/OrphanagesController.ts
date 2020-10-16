@@ -1,68 +1,39 @@
-import { Request, Response } from "express";
-import { getRepository } from "typeorm";
-import * as Yup from "yup";
+import { Request, Response } from 'express';
+import { getRepository } from 'typeorm';
+import * as Yup from 'yup';
 
-import orphanageView from "../views/orphanages_view";
-
-import Orphanage from "../models/Orphanage";
+import Orphanage from '../models/Orphanage';
+import orphanageView from '../views/orphanages_view';
 
 export default {
-  async index(request: Request, response: Response) {
+  async index(req: Request, res: Response) {
     const orphanagesRepository = getRepository(Orphanage);
 
-    const orphanage = await orphanagesRepository.find({
-      relations: ["images"],
+    const orphanages = await orphanagesRepository.find({
+      relations: ['images'],
     });
 
-    return response.status(200).json(orphanageView.renderMany(orphanage));
+    return res.json(orphanageView.renderMany(orphanages));
   },
-
-  async show(request: Request, response: Response) {
-    const { id } = request.params;
+  async show(req: Request, res: Response) {
+    const { id } = req.params;
 
     const orphanagesRepository = getRepository(Orphanage);
 
-    const orphanage = await orphanagesRepository.findOneOrFail({
-      where: { id },
-      relations: ["images"],
+    const orphanage = await orphanagesRepository.findOneOrFail(id, {
+      relations: ['images'],
     });
 
-    if (!orphanage) {
-      return response.status(400).json({ error: "Orphanage does not exists!" });
-    }
-
-    return response.status(200).json(orphanageView.render(orphanage));
+    return res.json(orphanageView.render(orphanage));
   },
-
-  async create(request: Request, response: Response) {
-    const {
-      name,
-      latitude,
-      longitude,
-      about,
-      instructions,
-      opening_hours,
-      open_on_weekends,
-    } = request.body;
-
+  async create(req: Request, res: Response) {
     const orphanagesRepository = getRepository(Orphanage);
 
-    const requestImages = request.files as Express.Multer.File[];
+    const requestImages = req.files as Express.Multer.File[];
 
     const images = requestImages.map((image) => {
       return { path: image.filename };
     });
-
-    const data = {
-      name,
-      latitude,
-      longitude,
-      about,
-      instructions,
-      opening_hours,
-      open_on_weekends,
-      images,
-    };
 
     const schema = Yup.object().shape({
       name: Yup.string().required(),
@@ -79,14 +50,22 @@ export default {
       ),
     });
 
-    await schema.validate(data, {
-      abortEarly: false,
-    });
+    let { open_on_weekends } = req.body;
+    open_on_weekends = open_on_weekends.toLowerCase() === 'true';
 
-    const orphanage = await orphanagesRepository.create(data);
+    await schema.validate(
+      { ...req.body, open_on_weekends, images },
+      { abortEarly: false }
+    );
+
+    const orphanage = orphanagesRepository.create({
+      ...req.body,
+      open_on_weekends,
+      images,
+    });
 
     await orphanagesRepository.save(orphanage);
 
-    response.status(201).json(orphanage);
+    return res.status(201).json(orphanage);
   },
 };

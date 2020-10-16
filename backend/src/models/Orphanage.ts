@@ -1,18 +1,16 @@
 import {
   Entity,
-  PrimaryGeneratedColumn,
   Column,
-  CreateDateColumn,
-  UpdateDateColumn,
+  PrimaryGeneratedColumn,
   OneToMany,
   JoinColumn,
-} from "typeorm";
+} from 'typeorm';
 
-import Image from "./Image";
+import Image from './Image';
 
-@Entity("orphanages")
+@Entity('orphanages')
 export default class Orphanage {
-  @PrimaryGeneratedColumn("increment")
+  @PrimaryGeneratedColumn('increment')
   id: number;
 
   @Column()
@@ -36,15 +34,9 @@ export default class Orphanage {
   @Column()
   open_on_weekends: boolean;
 
-  @CreateDateColumn()
-  created_at: Date;
-
-  @UpdateDateColumn()
-  updated_at: Date;
-
   @OneToMany(() => Image, (image) => image.orphanage, {
-    cascade: ["insert", "update"],
+    cascade: ['insert', 'update'],
   })
-  @JoinColumn({ name: "orphanage_id" })
+  @JoinColumn({ name: 'orphanage_id' })
   images: Image[];
 }
