@@ -40,12 +40,6 @@ NLW is a practical week with lots of code, challenges, networking and a single o
 Through our method you will learn new tools, learn about new technologies and discover hacks that will boost your career.
 An online and completely free event that will help you take the next step in your evolution as a dev.
 
-### Days
-- Dia 1: Acelerando sua evolução 12/10 - :heavy_check_mark:
-- Dia 2: Olhando as oportunidades 13/10 - :heavy_check_mark:
-- Dia 3: A escolha da Stack 14/10 - :heavy_check_mark:
-- Dia 4: Até 2 anos em 2 meses 15/10 - :construction:
-- Dia 5: Milha extra 16/10 - :construction:
 
 ## 💻 Project
 
@@ -53,7 +47,7 @@ Happy is a project developed based on Children's Day.
 That aims to connect people to orphanages that allow to make a children's day more special.
 
 <h1 align="center">
-    <img alt="Example" title="Example" src=".github/Home.svg" width="500px" />
+    <img alt="Example" title="Example" src=".github/background.png" width="100%" />
 </h1>
 
 
